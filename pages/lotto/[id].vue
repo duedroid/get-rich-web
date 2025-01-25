@@ -38,6 +38,7 @@
 </template>
 
 <script setup>
+const config = useRuntimeConfig()
 const route = useRoute();
 const router = useRouter();
 const slug = route.params.id;
