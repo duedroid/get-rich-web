@@ -3,13 +3,16 @@
     <v-container>
       <div class="d-flex ga-4 align-center">
         <v-btn
-          density="compact"
+          variant="plain"
           icon="mdi-arrow-left"
           color="primary"
           @click="router.push('/')"
         ></v-btn>
         <h2>{{ lotto.name }}</h2>
       </div>
+
+      <p class="text-caption my-4">อัพเดท : {{ lotto.updated_at }}</p>
+      
       <v-tabs v-model="tab" color="primary">
         <v-tab value="up">2 ตัวบน</v-tab>
         <v-tab value="down">2 ตัวล่าง</v-tab>
@@ -32,13 +35,12 @@
         </v-tabs-window-item>
       </v-tabs-window>
 
-      <p class="text-caption">อัพเดท : {{ lotto.updated_at }}</p>
     </v-container>
   </v-main>
 </template>
 
 <script setup>
-const config = useRuntimeConfig()
+const config = useRuntimeConfig();
 const route = useRoute();
 const router = useRouter();
 const slug = route.params.id;
@@ -51,7 +53,7 @@ const lotto = ref({
   down: [],
   updated_at: "",
 });
-const lottoStateKey = `lotto-${slug}`
+const lottoStateKey = `lotto-${slug}`;
 const lottoState = useState(lottoStateKey, () => null);
 
 onMounted(async () => {
