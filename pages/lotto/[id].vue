@@ -12,10 +12,12 @@
       </div>
 
       <p class="text-caption my-4">อัพเดท : {{ lotto.updated_at }}</p>
-      
+
       <v-tabs v-model="tab" color="primary">
-        <v-tab value="up">2 ตัวบน</v-tab>
+        <v-tab value="up">2 บน</v-tab>
         <v-tab value="down">2 ตัวล่าง</v-tab>
+        <v-tab value="upDayOfWeek">รายวัน 2 บน</v-tab>
+        <v-tab value="downDayOfWeek">รายวัน 2 ล่าง</v-tab>
       </v-tabs>
 
       <v-tabs-window v-model="tab">
@@ -24,7 +26,7 @@
           :key="tabName"
           :value="tabName"
         >
-          <v-list lines="two">
+          <v-list v-if="tabName == 'up' || tabName == 'down'" lines="two">
             <v-list-item
               class="px-0"
               v-for="item in lotto[tabName]"
@@ -32,9 +34,36 @@
               :subtitle="item.numbers.join(', ')"
             ></v-list-item>
           </v-list>
+
+          <div v-else>
+            <v-tabs v-model="dayTab" color="secondary">
+              <v-tab v-for="(day, i) in dayOfWeeks" :value="i">{{ day }}</v-tab>
+            </v-tabs>
+
+            <v-tabs-window v-model="dayTab">
+              <v-tabs-window-item
+                v-for="item in lotto[tabName]"
+                class="px-0"
+              >
+                <v-table density="compact" class="py-4">
+                  <thead>
+                    <tr>
+                      <th class="text-center">เลข</th>
+                      <th class="text-center">จำนวนครั้ง</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="number in item.numbers">
+                      <td class="text-center">{{ number[0] }}</td>
+                      <td class="text-center">{{ number[1] }}</td>
+                    </tr>
+                  </tbody>
+                </v-table>
+              </v-tabs-window-item>
+            </v-tabs-window>
+          </div>
         </v-tabs-window-item>
       </v-tabs-window>
-
     </v-container>
   </v-main>
 </template>
@@ -45,12 +74,24 @@ const route = useRoute();
 const router = useRouter();
 const slug = route.params.id;
 
-const allTabs = ["up", "down"];
+const allTabs = ["up", "down", "upDayOfWeek", "downDayOfWeek"];
+const dayOfWeeks = [
+  "จันทร์",
+  "อังคาร",
+  "พุธ",
+  "พฤหัสบดี",
+  "ศุกร์",
+  "เสาร์",
+  "อาทิตย์",
+];
 const tab = ref();
+const dayTab = ref();
 const lotto = ref({
   name: "",
   up: [],
   down: [],
+  upDayOfWeek: [],
+  downDayOfWeek: [],
   updated_at: "",
 });
 const lottoStateKey = `lotto-${slug}`;
@@ -72,11 +113,27 @@ async function getLotto() {
 
       const data = await response.json();
       lottoState.value = data;
+
+      lottoState.value.upDayOfWeek = makeDayOfWeek(data.up_day_of_week);
+      lottoState.value.downDayOfWeek = makeDayOfWeek(data.down_day_of_week);
     } catch (error) {
       console.log(error);
     }
   }
 
   lotto.value = lottoState.value;
+}
+
+function makeDayOfWeek(data) {
+  let response = [];
+  data.forEach((item, i) => {
+    response.push({
+      day: dayOfWeeks[i],
+      numbers: item,
+    });
+  });
+
+  console.log(response);
+  return response;
 }
 </script>
