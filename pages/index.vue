@@ -30,6 +30,7 @@ const lottoGroupMap = {
   "vietnam": "หวยเวียดนาม",
   "stock": "หวยหุ้น",
   "stock-vip": "หวยหุ้น VIP",
+  "thai-auth": "หวยทางการ",
 };
 
 onMounted(async () => {
