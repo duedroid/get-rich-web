@@ -26,14 +26,15 @@
           :key="tabName"
           :value="tabName"
         >
-          <v-list v-if="tabName == 'up' || tabName == 'down'" lines="two">
-            <v-list-item
-              class="px-0"
-              v-for="item in lotto[tabName]"
-              :title="`ออก ${item.count} ครั้ง`"
-              :subtitle="item.numbers.join(', ')"
-            ></v-list-item>
-          </v-list>
+          <div class="mt-4" v-if="tabName == 'up' || tabName == 'down'">
+            <v-card v-for="item in lotto[tabName]">
+              <v-card-title class="px-0 text-subtitle-1">
+                <span v-if="item.count == 0">ไม่เคยออก</span>
+                <span v-else>ออก {{ item.count }} ครั้ง</span>
+              </v-card-title>
+              <v-card-text class="px-0 text-subtitle-2 text-grey-darken-1">{{ item.numbers.join(', ') }}</v-card-text>
+            </v-card>
+          </div>
 
           <div v-else>
             <v-tabs v-model="dayTab" color="secondary">
@@ -41,10 +42,7 @@
             </v-tabs>
 
             <v-tabs-window v-model="dayTab">
-              <v-tabs-window-item
-                v-for="item in lotto[tabName]"
-                class="px-0"
-              >
+              <v-tabs-window-item v-for="item in lotto[tabName]" class="px-0">
                 <v-table density="compact" class="py-4">
                   <thead>
                     <tr>
